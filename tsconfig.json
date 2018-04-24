@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "target": "es6",
+    "lib": [
+      "es2017"
+    ],
+    "declaration": true,
+    "noImplicitAny": false,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "sourceMap": false,
+    "outDir": "lib"
+  },
+  "formatCodeOptions": {
+    "indentSize": 2,
+    "tabSize": 2
+  },
+  "files": [
+    "src/index.ts"
+  ],
+  "include": [
+    "test"
+  ],
+  "exclude": [
+    "**/node_modules",
+    "test"
+  ]
+}
