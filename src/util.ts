@@ -76,13 +76,12 @@ export function humanizeNumber(n: number | string, options?: IHumanizeNumberOpti
     ...options
   };
 
-  const str = n.toString().split('.');
-  str[0] = str[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1' + delimiter);
-  
+  const str = n.toString().split(".");
+  str[0] = str[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1" + delimiter);
+
   return str.join(separator);
 
 }
-
 
 /**
  * Show the response time in a human readable format.
@@ -90,10 +89,10 @@ export function humanizeNumber(n: number | string, options?: IHumanizeNumberOpti
  * in seconds otherwise.
  */
 
-export function deltaTime (start: number): string {
+export function deltaTime(start: number): string {
   const delta = Date.now() - start;
-  
+
   return humanizeNumber(delta < 10000
-    ? delta + 'ms'
-    : Math.round(delta / 1000) + 's')
+    ? delta + "ms"
+    : Math.round(delta / 1000) + "s");
 }

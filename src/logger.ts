@@ -8,7 +8,8 @@ export function Logger() {
   return async function logger(ctx: IDBContext, next: () => any) {
     // request
     const start = Date.now();
-    const tag = `[${ctx.method}] ${ctx.originalUrl}`;
+    const requestId = ctx.header["x-api-gateway-id"] || Date.now();
+    const tag = `[${ctx.method}] ${ctx.originalUrl} - ${requestId}`;
 
     ctx.logger.log(tag, {
       type: "Request",
@@ -16,7 +17,6 @@ export function Logger() {
       url: ctx.originalUrl,
       header: ctx.debug ? ctx.request.header : undefined,
       body: ctx.debug ? ctx.body : undefined,
-      raw: ctx.req.rawHeaders,
     });
 
     try {
