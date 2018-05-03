@@ -35,6 +35,10 @@
     "@types/express" "*"
     "@types/node" "*"
 
+"@types/bytes@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@types/bytes/-/bytes-3.0.0.tgz#549eeacd0a8fecfaa459334583a4edcee738e6db"
+
 "@types/connect@*":
   version "3.4.32"
   resolved "https://registry.yarnpkg.com/@types/connect/-/connect-3.4.32.tgz#aa0e9616b9435ccad02bc52b5b454ffc2c70ba28"
@@ -239,6 +243,10 @@ braces@^2.3.1:
 builtin-modules@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/builtin-modules/-/builtin-modules-1.1.1.tgz#270f076c5a72c02f5b65a47df94c5fe3a278892f"
+
+bytes@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.0.0.tgz#d32815404d689699f85a4ea4fa8755dd13a96048"
 
 cache-base@^1.0.1:
   version "1.0.1"
@@ -1101,6 +1109,10 @@ parseurl@^1.3.0:
 pascalcase@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/pascalcase/-/pascalcase-0.1.1.tgz#b363e55e8006ca6fe21784d2db22bd15d7917f14"
+
+passthrough-counter@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/passthrough-counter/-/passthrough-counter-1.0.0.tgz#1967d9e66da572b5c023c787db112a387ab166fa"
 
 path-is-absolute@^1.0.0:
   version "1.0.1"

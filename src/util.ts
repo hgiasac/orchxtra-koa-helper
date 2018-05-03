@@ -65,3 +65,35 @@ export function parseFilterQuery<T = object>(params: IRequestQuery): T {
       };
     }, {});
 }
+
+export interface IHumanizeNumberOptions {
+  delimiter?: string;
+  separator?: string;
+}
+
+export function humanizeNumber(n: number | string, options?: IHumanizeNumberOptions): string {
+  const { delimiter = "," , separator = "." } = {
+    ...options
+  };
+
+  const str = n.toString().split('.');
+  str[0] = str[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1' + delimiter);
+  
+  return str.join(separator);
+
+}
+
+
+/**
+ * Show the response time in a human readable format.
+ * In milliseconds if less than 10 seconds,
+ * in seconds otherwise.
+ */
+
+export function deltaTime (start: number): string {
+  const delta = Date.now() - start;
+  
+  return humanizeNumber(delta < 10000
+    ? delta + 'ms'
+    : Math.round(delta / 1000) + 's')
+}
