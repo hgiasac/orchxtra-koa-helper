@@ -15,7 +15,8 @@ export function Logger() {
       method: ctx.method,
       url: ctx.originalUrl,
       header: ctx.debug ? ctx.request.header : undefined,
-      body: ctx.debug ? ctx.body : undefined
+      body: ctx.debug ? ctx.body : undefined,
+      raw: ctx.req.rawHeaders,
     });
 
     try {
