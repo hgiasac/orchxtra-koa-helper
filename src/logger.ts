@@ -4,13 +4,16 @@ import { IDBContext } from "./handler";
 import { deltaTime } from "./util";
 
 export function Logger() {
-  return async function logger(ctx, next) {
+
+  return async function logger(ctx: IDBContext, next: () => any) {
     // request
     const start = Date.now();
 
     ctx.logger.log("[Request]", {
       method: ctx.method,
-      url: ctx.originalUrl
+      url: ctx.originalUrl,
+      header: ctx.debug ? ctx.request.header : undefined,
+      body: ctx.debug ? ctx.body : undefined
     });
 
     try {
@@ -76,7 +79,12 @@ function log(ctx: IDBContext, start: number, len, err?, event?) {
     : "-->";
 
   ctx.logger.log(`[Response]`, {
-    ...ctx,
+    method: ctx.method,
+    url: ctx.originalUrl,
+    origin: ctx.origin,
+    originUrl: ctx.originalUrl,
+    header: ctx.debug ? ctx.response.header : undefined,
+    body: ctx.debug ? ctx.response.body : undefined,
     upstream,
     status,
     length,

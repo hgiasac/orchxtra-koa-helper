@@ -6,6 +6,7 @@ export interface ILogger {
 }
 
 export interface IDBContext extends Context {
+  debug: boolean;
   db: Knex;
   logger: ILogger;
 }
