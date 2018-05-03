@@ -8,8 +8,10 @@ export function Logger() {
   return async function logger(ctx: IDBContext, next: () => any) {
     // request
     const start = Date.now();
+    const tag = `[${ctx.method}] ${ctx.originalUrl}`;
 
-    ctx.logger.log(`[Request] ${ctx.method} ${ctx.originalUrl}`, {
+    ctx.logger.log(tag, {
+      type: "Request",
       method: ctx.method,
       url: ctx.originalUrl,
       header: ctx.debug ? ctx.request.header : undefined,
@@ -20,7 +22,7 @@ export function Logger() {
       await next();
     } catch (err) {
       // log uncaught downstream errors
-      log(ctx, start, null, err);
+      log(tag, ctx, start, null, err);
       throw err;
     }
 
@@ -49,7 +51,7 @@ export function Logger() {
     function done() {
       res.removeListener("finish", onfinish);
       res.removeListener("close", onclose);
-      log(ctx, start, counter ? counter.length : length, null);
+      log(tag, ctx, start, counter ? counter.length : length, null);
     }
   };
 }
@@ -58,7 +60,7 @@ export function Logger() {
  * Log helper.
  */
 
-function log(ctx: IDBContext, start: number, len, err?) {
+function log(tag: string, ctx: IDBContext, start: number, len, err?) {
   // get the status code of the response
   const status = err
     ? (err.isBoom ? err.output.statusCode : err.status || 500)
@@ -74,7 +76,8 @@ function log(ctx: IDBContext, start: number, len, err?) {
     length = bytes(len).toLowerCase();
   }
 
-  ctx.logger.log(`[Response] ${ctx.method} ${ctx.originalUrl}`, {
+  ctx.logger.log(tag, {
+    type: "Response",
     method: ctx.method,
     url: ctx.originalUrl,
     origin: ctx.origin,
