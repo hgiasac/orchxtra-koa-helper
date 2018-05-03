@@ -9,7 +9,7 @@ export function Logger() {
     // request
     const start = Date.now();
 
-    ctx.logger.log("[Request]", {
+    ctx.logger.log(`[Request] ${ctx.method} ${ctx.originalUrl}`, {
       method: ctx.method,
       url: ctx.originalUrl,
       header: ctx.debug ? ctx.request.header : undefined,
@@ -46,10 +46,10 @@ export function Logger() {
     res.once("finish", onfinish);
     res.once("close", onclose);
 
-    function done(event) {
+    function done() {
       res.removeListener("finish", onfinish);
       res.removeListener("close", onclose);
-      log(ctx, start, counter ? counter.length : length, null, event);
+      log(ctx, start, counter ? counter.length : length, null);
     }
   };
 }
@@ -58,7 +58,7 @@ export function Logger() {
  * Log helper.
  */
 
-function log(ctx: IDBContext, start: number, len, err?, event?) {
+function log(ctx: IDBContext, start: number, len, err?) {
   // get the status code of the response
   const status = err
     ? (err.isBoom ? err.output.statusCode : err.status || 500)
@@ -74,18 +74,12 @@ function log(ctx: IDBContext, start: number, len, err?, event?) {
     length = bytes(len).toLowerCase();
   }
 
-  const upstream = err ? "xxx"
-    : event === "close" ? "-x-"
-    : "-->";
-
-  ctx.logger.log(`[Response]`, {
+  ctx.logger.log(`[Response] ${ctx.method} ${ctx.originalUrl}`, {
     method: ctx.method,
     url: ctx.originalUrl,
     origin: ctx.origin,
-    originUrl: ctx.originalUrl,
     header: ctx.debug ? ctx.response.header : undefined,
     body: ctx.debug ? ctx.response.body : undefined,
-    upstream,
     status,
     length,
     time: deltaTime(start)
