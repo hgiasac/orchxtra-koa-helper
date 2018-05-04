@@ -10,3 +10,9 @@ export interface IDBContext extends Context {
   db: Knex;
   logger: ILogger;
 }
+
+export interface IAuthenticatedHeader {
+  [key: string]: string;
+  "x-amzn-apigateway-request-id": string;
+  "x-amzn-cognito-username": string;
+}
