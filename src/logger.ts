@@ -11,6 +11,8 @@ export function Logger() {
     const requestId = ctx.headers[AGW_REQUEST_ID_HEADER] || Date.now();
     const tag = `[${ctx.method}] ${ctx.originalUrl} - ${requestId}`;
 
+    ctx.logger.logTag = ctx.logger.log;
+
     const logFunc = (payload: any) => {
       return ctx.logger.logTag(tag, payload);
     };
