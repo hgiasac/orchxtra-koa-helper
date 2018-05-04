@@ -78,14 +78,14 @@ function log(tag: string, ctx: IDBContext, start: number, len, err?) {
   }
 
   ctx.logger.log(tag, {
+    status,
+    length,
     type: "Response",
     method: ctx.method,
     url: ctx.originalUrl,
     origin: ctx.origin,
     header: ctx.debug ? ctx.response.header : undefined,
     body: ctx.debug ? ctx.response.body : undefined,
-    status,
-    length,
     time: deltaTime(start)
   });
 }
