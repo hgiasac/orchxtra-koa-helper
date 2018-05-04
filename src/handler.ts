@@ -3,7 +3,8 @@ import * as Knex from "knex";
 import { Context } from "koa";
 
 export interface ILogger {
-  log: (tag: string, payload: any) => void;
+  log: (payload: any) => void;
+  logTag: (tag: string, payload: any) => void;
 }
 
 export const AGW_REQUEST_ID_HEADER = "x-amzn-apigateway-request-id";

@@ -11,7 +11,13 @@ export function Logger() {
     const requestId = ctx.headers[AGW_REQUEST_ID_HEADER] || Date.now();
     const tag = `[${ctx.method}] ${ctx.originalUrl} - ${requestId}`;
 
-    ctx.logger.log(tag, {
+    const logFunc = (payload: any) => {
+      return ctx.logger.logTag(tag, payload);
+    };
+
+    ctx.logger.log = logFunc;
+
+    ctx.logger.log({
       type: "Request",
       method: ctx.method,
       url: ctx.originalUrl,
@@ -23,7 +29,7 @@ export function Logger() {
       await next();
     } catch (err) {
       // log uncaught downstream errors
-      log(tag, ctx, start, null, err);
+      log(ctx, start, null, err);
       throw err;
     }
 
@@ -52,7 +58,7 @@ export function Logger() {
     function done() {
       res.removeListener("finish", onfinish);
       res.removeListener("close", onclose);
-      log(tag, ctx, start, counter ? counter.length : length, null);
+      log(ctx, start, counter ? counter.length : length, null);
     }
   };
 }
@@ -61,7 +67,7 @@ export function Logger() {
  * Log helper.
  */
 
-function log(tag: string, ctx: IDBContext, start: number, len, err?) {
+function log(ctx: IDBContext, start: number, len, err?) {
   // get the status code of the response
   const status = err
     ? (err.isBoom ? err.output.statusCode : err.status || 500)
@@ -77,7 +83,7 @@ function log(tag: string, ctx: IDBContext, start: number, len, err?) {
     length = bytes(len).toLowerCase();
   }
 
-  ctx.logger.log(tag, {
+  ctx.logger.log({
     status,
     length,
     type: "Response",
