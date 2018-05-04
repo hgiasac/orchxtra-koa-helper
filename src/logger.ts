@@ -1,6 +1,6 @@
 import * as bytes from "bytes";
 import Counter = require("passthrough-counter");
-import { IDBContext } from "./handler";
+import { AGW_REQUEST_ID_HEADER, IDBContext } from "./handler";
 import { deltaTime } from "./util";
 
 export function Logger() {
@@ -8,7 +8,7 @@ export function Logger() {
   return async function logger(ctx: IDBContext, next: () => any) {
     // request
     const start = Date.now();
-    const requestId = ctx.header["x-api-gateway-id"] || Date.now();
+    const requestId = ctx.headers[AGW_REQUEST_ID_HEADER] || Date.now();
     const tag = `[${ctx.method}] ${ctx.originalUrl} - ${requestId}`;
 
     ctx.logger.log(tag, {
