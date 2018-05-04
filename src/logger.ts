@@ -3,7 +3,7 @@ import Counter = require("passthrough-counter");
 import { AGW_REQUEST_ID_HEADER, IDBContext } from "./handler";
 import { deltaTime } from "./util";
 
-export function Logger() {
+export function Logger(rawLogger) {
 
   return async function logger(ctx: IDBContext, next: () => any) {
     // request
@@ -11,10 +11,11 @@ export function Logger() {
     const requestId = ctx.headers[AGW_REQUEST_ID_HEADER] || Date.now();
     const tag = `[${ctx.method}] ${ctx.originalUrl} - ${requestId}`;
 
+    const logTag = rawLogger.logTag || rawLogger.log;
     const newLogger = {
-      logTag: ctx.logger.log,
+      logTag,
       log: (payload: any) => {
-        return (<any> ctx.logger).log(tag, payload);
+        return logTag(tag, payload);
       }
     };
 
