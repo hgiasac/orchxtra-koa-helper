@@ -49,20 +49,30 @@ export function getProfileByAuthId(authId: string): AxiosPromise<IProfile> {
   });
 }
 
-export async function authMiddleware(ctx: IAuthContext, next: () => any) {
+export interface IAuthMiddlewareOptions {
+  authIdHeaderName?: string;
+}
 
-  const username = ctx.headers[COGNITO_USERNAME_HEADER];
-  if (!username) {
-    ctx.throw(404);
-  }
+export function AuthMiddleware(options?: IAuthMiddlewareOptions) {
 
-  try {
-    const userResult = await getProfileByAuthId(username);
-    const profile: IProfile = userResult.data;
-    ctx.authUser = profile;
-    next();
+  const { authHeadeauthIdHeaderNamer = COGNITO_USERNAME_HEADER } = { ...options };
 
-  } catch (e) {
-    catchHTTPRequestException(ctx, e);
-  }
+  return async (ctx: IAuthContext, next: () => any) => {
+
+    const username = ctx.headers[authHeadeauthIdHeaderNamer];
+    if (!username) {
+      ctx.throw(404);
+    }
+
+    try {
+      const userResult = await getProfileByAuthId(username);
+      const profile: IProfile = userResult.data;
+      ctx.authUser = profile;
+      next();
+
+    } catch (e) {
+      catchHTTPRequestException(ctx, e);
+    }
+  };
+
 }
