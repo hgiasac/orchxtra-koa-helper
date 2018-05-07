@@ -1,4 +1,5 @@
 import axios, { AxiosPromise } from "axios";
+import { catchHTTPRequestException, COGNITO_USERNAME_HEADER, IDBContext } from ".";
 
 export interface IAuthUser {
   id: string;
@@ -38,8 +39,30 @@ export interface IProfile extends IAuthUser {
   serviceAccount: IServiceAccount;
 }
 
+export interface IAuthContext extends IDBContext {
+  authUser: IAuthUser;
+}
+
 export function getProfileByAuthId(authId: string): AxiosPromise<IProfile> {
   return axios.get(`/users/oauth/${authId}`, {
     baseURL: process.env.AUTH_API_HOST
   });
+}
+
+export async function authMiddleware(ctx: IAuthContext, next: () => any) {
+
+  const username = ctx.headers[COGNITO_USERNAME_HEADER];
+  if (!username) {
+    ctx.throw(404);
+  }
+
+  try {
+    const userResult = await getProfileByAuthId(username);
+    const profile: IProfile = userResult.data;
+    ctx.authUser = profile;
+    next();
+
+  } catch (e) {
+    catchHTTPRequestException(ctx, e);
+  }
 }
