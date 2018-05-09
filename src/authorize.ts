@@ -76,7 +76,8 @@ export function AuthMiddleware(options?: IAuthMiddlewareOptions) {
       const userResult = await getProfileByAuthId(username, { baseURL });
       const profile: IProfile = userResult.data;
       ctx.authUser = profile;
-      next();
+
+      return next();
 
     } catch (e) {
       catchHTTPRequestException(ctx, e);
