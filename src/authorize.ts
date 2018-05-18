@@ -69,7 +69,7 @@ export function AuthMiddleware(options?: IAuthMiddlewareOptions) {
 
     const username = ctx.headers[authIdHeaderName];
     if (!username) {
-      ctx.throw(404);
+      ctx.throw(401);
     }
 
     try {
