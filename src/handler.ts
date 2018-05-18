@@ -23,6 +23,10 @@ export interface IAuthenticatedHeader {
 }
 
 export function catchHTTPRequestException(ctx: IDBContext, e: AxiosError) {
+  if (ctx.debug || !e.response) {
+    ctx.logger.log(e);
+  } 
+  
   if (e.response) {
     ctx.status = e.response.status;
     ctx.body = e.response.data;
