@@ -1,5 +1,8 @@
 import axios, { AxiosPromise } from "axios";
-import { catchHTTPRequestException, COGNITO_USERNAME_HEADER, IDBContext } from ".";
+import { Context } from "koa";
+import {
+  catchHTTPRequestException, COGNITO_USERNAME_HEADER, IDBContextState, IRequest
+} from "./handler";
 
 export interface IAuthUser {
   id: string;
@@ -39,8 +42,13 @@ export interface IProfile extends IAuthUser {
   serviceAccount: IServiceAccount;
 }
 
-export interface IAuthContext extends IDBContext {
+export interface IAuthContextState extends IDBContextState {
   authUser: IAuthUser;
+}
+
+export interface IAuthContext<T = any> extends Context {
+  state: IAuthContextState;
+  request: IRequest<T>;
 }
 
 export function getProfileByAuthId(authId: string, options?: {
@@ -69,7 +77,7 @@ export function AuthMiddleware(options?: IAuthMiddlewareOptions) {
 
     const username = ctx.headers[authIdHeaderName];
     if (!username) {
-      ctx.throw(401);
+      ctx.throw(401, "OAuth Username is empty");
     }
 
     try {
@@ -83,7 +91,7 @@ export function AuthMiddleware(options?: IAuthMiddlewareOptions) {
 
       const userResult = await getProfileByAuthId(username, { baseURL });
       const profile: IProfile = userResult.data;
-      ctx.authUser = profile;
+      ctx.state.authUser = profile;
 
       return next();
 

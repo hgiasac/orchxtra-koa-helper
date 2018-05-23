@@ -17,15 +17,17 @@
   "license": "ISC",
   "dependencies": {
     "@types/bytes": "^3.0.0",
+    "@types/joi": "^13.0.8",
     "@types/knex": "^0.14.9",
     "@types/koa": "^2.0.45",
+    "@types/nock": "^9.1.3",
     "axios": "^0.18.0",
     "bytes": "^3.0.0",
+    "joi": "^13.3.0",
     "knex": "^0.14.6",
     "koa": "^2.5.0",
-    "passthrough-counter": "^1.0.0",
-    "@types/nock": "^9.1.3",
-    "nock": "^9.2.5"
+    "nock": "^9.2.5",
+    "passthrough-counter": "^1.0.0"
   },
   "devDependencies": {
     "tslint": "^5.9.1",
