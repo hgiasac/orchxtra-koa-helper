@@ -82,7 +82,7 @@ export function AuthMiddleware(options?: IAuthMiddlewareOptions) {
 
     try {
       if (ctx.debug) {
-        ctx.logger.log({
+        ctx.state.logger.log({
           baseURL,
           message: "Get profile by Auth ID",
           authId: username

@@ -19,9 +19,9 @@ export function Logger(rawLogger) {
       }
     };
 
-    ctx.logger = newLogger;
+    ctx.state.logger = newLogger;
 
-    ctx.logger.log({
+    ctx.state.logger.log({
       type: "Request",
       method: ctx.method,
       url: ctx.originalUrl,
@@ -87,7 +87,7 @@ function log(ctx: IDBContext, start: number, len, err?) {
     length = bytes(len).toLowerCase();
   }
 
-  ctx.logger.log({
+  ctx.state.logger.log({
     status,
     length,
     err,
