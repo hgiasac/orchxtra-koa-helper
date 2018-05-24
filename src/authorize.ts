@@ -1,7 +1,6 @@
 import axios, { AxiosPromise } from "axios";
-import { Context } from "koa";
 import {
-  catchHTTPRequestException, COGNITO_USERNAME_HEADER, IDBContext, IRequest
+  catchHTTPRequestException, COGNITO_USERNAME_HEADER, IDBContext,
 } from "./handler";
 
 export interface IAuthUser {
