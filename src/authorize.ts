@@ -1,7 +1,7 @@
 import axios, { AxiosPromise } from "axios";
 import { Context } from "koa";
 import {
-  catchHTTPRequestException, COGNITO_USERNAME_HEADER, IDBContextState, IRequest
+  catchHTTPRequestException, COGNITO_USERNAME_HEADER, IDBContext, IRequest
 } from "./handler";
 
 export interface IAuthUser {
@@ -42,13 +42,12 @@ export interface IProfile extends IAuthUser {
   serviceAccount: IServiceAccount;
 }
 
-export interface IAuthContextState extends IDBContextState {
+export interface IAuthContextState {
   authUser: IAuthUser;
 }
 
-export interface IAuthContext<T = any> extends Context {
+export interface IAuthContext<T = any> extends IDBContext<T> {
   state: IAuthContextState;
-  request: IRequest<T>;
 }
 
 export function getProfileByAuthId(authId: string, options?: {
@@ -82,7 +81,7 @@ export function AuthMiddleware(options?: IAuthMiddlewareOptions) {
 
     try {
       if (ctx.debug) {
-        ctx.state.logger.log({
+        ctx.logger.log({
           baseURL,
           message: "Get profile by Auth ID",
           authId: username

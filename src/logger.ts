@@ -19,14 +19,14 @@ export function Logger(rawLogger) {
       }
     };
 
-    ctx.state.logger = newLogger;
+    ctx.logger = newLogger;
 
-    ctx.state.logger.log({
+    ctx.logger.log({
       type: "Request",
       method: ctx.method,
       url: ctx.originalUrl,
       header: ctx.debug ? ctx.request.header : undefined,
-      body: ctx.debug ? ctx.body : undefined,
+      body: ctx.debug ? ctx.request.body : undefined,
     });
 
     try {
@@ -87,7 +87,7 @@ function log(ctx: IDBContext, start: number, len, err?) {
     length = bytes(len).toLowerCase();
   }
 
-  ctx.state.logger.log({
+  ctx.logger.log({
     status,
     length,
     err,

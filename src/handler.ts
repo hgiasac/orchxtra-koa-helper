@@ -10,19 +10,15 @@ export interface ILogger {
 export const AGW_REQUEST_ID_HEADER = "x-amzn-apigateway-request-id";
 export const COGNITO_USERNAME_HEADER = "x-amzn-cognito-username";
 
-export interface IDBContextState {
-  debug: boolean;
-  db: Knex;
-  logger: ILogger;
-}
-
 export interface IRequest<T = any> extends Request {
   body: T;
 }
 
 export interface IDBContext<T = any> extends Context {
-  state: IDBContextState;
   request: IRequest<T>;
+  debug: boolean;
+  db: Knex;
+  logger: ILogger;
 }
 
 export interface IAuthenticatedHeader {
