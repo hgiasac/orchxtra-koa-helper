@@ -60,7 +60,7 @@ export function getProfileByAuthId(authId: string, options?: {
 }
 
 export interface IAuthMiddlewareOptions {
-  authBaseURL?: string;
+  baseURL?: string;
   authIdHeaderName?: string;
 }
 
