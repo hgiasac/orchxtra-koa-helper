@@ -4,3 +4,4 @@ export * from "./healthCheck";
 export * from "./logger";
 export * from "./authorize";
 export * from "./test";
+export * from "./error";

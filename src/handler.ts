@@ -1,4 +1,3 @@
-import { AxiosError } from "axios";
 import * as Knex from "knex";
 import { Context, Request } from "koa";
 
@@ -25,17 +24,4 @@ export interface IAuthenticatedHeader {
   [key: string]: string;
   "x-amzn-apigateway-request-id": string;
   "x-amzn-cognito-username": string;
-}
-
-export function catchHTTPRequestException(ctx: IDBContext, e: AxiosError) {
-  if (ctx.debug || !e.response) {
-    ctx.logger.log(e);
-  }
-
-  if (e.response) {
-    ctx.status = e.response.status;
-    ctx.body = e.response.data;
-  } else {
-    ctx.throw(500, e.message);
-  }
 }
