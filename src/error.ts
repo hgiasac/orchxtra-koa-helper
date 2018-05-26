@@ -1,6 +1,11 @@
 import { AxiosError } from "axios";
 import { IDBContext } from "./handler";
 
+export enum ErrorCode {
+  NotFound = "not_found",
+  InternalError = "internal_error",
+}
+
 export interface IError {
   status: number;
   code: string;
@@ -15,7 +20,7 @@ export function catchHandlerError(
 
   return ctx.throw(
     (<IError> err).status || 500, {
-      code: (<IError> err).code || "internal_error",
+      code: (<IError> err).code || ErrorCode.InternalError,
       message: err.message,
     }
   );
