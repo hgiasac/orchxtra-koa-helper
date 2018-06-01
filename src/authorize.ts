@@ -1,7 +1,7 @@
 import axios, { AxiosPromise } from "axios";
-import { catchHTTPRequestException } from "./error";
+// import { catchHTTPRequestException } from "./error";
 import {
-  COGNITO_USERNAME_HEADER, IDBContext,
+  IDBContext,
 } from "./handler";
 
 export interface IAuthUser {
@@ -65,38 +65,38 @@ export interface IAuthMiddlewareOptions {
   authIdHeaderName?: string;
 }
 
-export function AuthMiddleware(options?: IAuthMiddlewareOptions) {
+// export function AuthMiddleware(options?: IAuthMiddlewareOptions) {
 
-  const {
-    authIdHeaderName = COGNITO_USERNAME_HEADER,
-    baseURL = process.env.AUTH_API_HOST,
-  } = { ...options };
+//   const {
+//     authIdHeaderName = COGNITO_USERNAME_HEADER,
+//     baseURL = process.env.AUTH_API_HOST,
+//   } = { ...options };
 
-  return async (ctx: IAuthContext, next: () => any) => {
+//   return async (ctx: IAuthContext, next: () => any) => {
 
-    const username = ctx.headers[authIdHeaderName];
-    if (!username) {
-      ctx.throw(401, "OAuth Username is empty");
-    }
+//     const username = ctx.headers[authIdHeaderName];
+//     if (!username) {
+//       ctx.throw(401, "OAuth Username is empty");
+//     }
 
-    try {
-      if (ctx.debug) {
-        ctx.logger.log({
-          baseURL,
-          message: "Get profile by Auth ID",
-          authId: username
-        });
-      }
+//     try {
+//       if (ctx.debug) {
+//         ctx.logger.log({
+//           baseURL,
+//           message: "Get profile by Auth ID",
+//           authId: username
+//         });
+//       }
 
-      const userResult = await getProfileByAuthId(username, { baseURL });
-      const profile: IProfile = userResult.data;
-      ctx.state.authUser = profile;
+//       const userResult = await getProfileByAuthId(username, { baseURL });
+//       const profile: IProfile = userResult.data;
+//       ctx.state.authUser = profile;
 
-      return next();
+//       return next();
 
-    } catch (e) {
-      catchHTTPRequestException(ctx, e);
-    }
-  };
+//     } catch (e) {
+//       catchHTTPRequestException(ctx, e);
+//     }
+//   };
 
-}
+// }

@@ -1,6 +1,6 @@
 import * as bytes from "bytes";
 import Counter = require("passthrough-counter");
-import { AGW_REQUEST_ID_HEADER, IDBContext } from "./handler";
+import { IAuthenticatedHeader, IDBContext } from "./handler";
 import { deltaTime } from "./util";
 
 export function Logger(rawLogger) {
@@ -8,7 +8,9 @@ export function Logger(rawLogger) {
   return async function logger(ctx: IDBContext, next: () => any) {
     // request
     const start = Date.now();
-    const requestId = ctx.headers[AGW_REQUEST_ID_HEADER] || Date.now();
+    const headers: IAuthenticatedHeader = ctx.request.headers;
+
+    const requestId = headers["x-orchxtra-apigateway-request-id"] || Date.now();
     const tag = `[${ctx.method}] ${ctx.originalUrl} - ${requestId}`;
 
     const logTag = rawLogger.logTag || rawLogger.log;
