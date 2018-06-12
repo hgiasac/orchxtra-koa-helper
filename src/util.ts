@@ -1,6 +1,6 @@
 export interface IPagingParams {
   page: number;
-  pageSize: number;
+  pageSize: number | boolean;
   orderBy: string[][];
 }
 
@@ -39,7 +39,7 @@ export function parsePaginationQuery(params: IRequestQuery): IPagingParams {
 
   return {
     page: parseNormalInteger(firstParam(params.page)) || 1,
-    pageSize: parseNormalInteger(firstParam(params.size)) || PAGE_SIZE,
+    pageSize: parseNormalInteger(firstParam(params.size)),
     orderBy: !params.sort ? [] : firstParam(params.sort).split(",")
       .map((m) => m.trim())
       .map((s) => s.substr(0, 1) === "-" ? [s.substr(1), "DESC"] : [s, "ASC"]),
