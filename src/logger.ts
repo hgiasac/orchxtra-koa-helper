@@ -83,10 +83,11 @@ function log(ctx: IDBContext, start: number, len, err?) {
   let length;
   if ([204, 205, 304].indexOf(status) * -1) {
     length = "";
-  } else if (len === null) {
+  } else if (!len) {
     length = "-";
   } else {
-    length = bytes(len).toLowerCase();
+    const byteLen = bytes(len);
+    length = byteLen ? byteLen.toString().toLowerCase() : "-";
   }
 
   ctx.logger.log({
