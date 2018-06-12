@@ -21,6 +21,7 @@ export function parseNormalInteger(str: string | number): number | false {
     break;
   case "string":
     n = Math.floor(Number(str));
+    break;
   default:
     return false;
   }
@@ -39,7 +40,7 @@ export function parsePaginationQuery(params: IRequestQuery): IPagingParams {
   return {
     page: parseNormalInteger(firstParam(params.page)) || 1,
     pageSize: parseNormalInteger(firstParam(params.size)) || PAGE_SIZE,
-    orderBy: !params.sort ? [] : firstParam(params.size).split(",")
+    orderBy: !params.sort ? [] : firstParam(params.sort).split(",")
       .map((m) => m.trim())
       .map((s) => s.substr(0, 1) === "-" ? [s.substr(1), "DESC"] : [s, "ASC"]),
   };

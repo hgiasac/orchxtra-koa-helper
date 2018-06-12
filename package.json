@@ -6,7 +6,7 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "build": "npm run clean && tsc",
-    "test": "NODE_ENV=test LOG_LEVEL=debug nyc mocha",
+    "test": "NODE_ENV=test jest",
     "clean": "rm -rf lib && rm -rf .nyc_output && rm -rf coverage",
     "install": "npm run build"
   },
@@ -30,24 +30,28 @@
     "passthrough-counter": "^1.0.0"
   },
   "devDependencies": {
+    "jest": "^23.1.0",
+    "ts-jest": "^22.4.6",
     "tslint": "^5.9.1",
     "tslint-consistent-codestyle": "^1.13.0",
     "tslint-eslint-rules": "^5.1.0",
     "typescript": "^2.8.1"
   },
-  "nyc": {
-    "extension": [
-      ".ts",
-      ".tsx"
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "bail": true,
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
     ],
-    "include": [
-      "src/**/*.ts"
-    ],
-    "exclude": [
-      "**/*.d.ts"
-    ],
-    "require": [
-      "ts-node/register"
-    ]
+    "testEnvironment": "node",
+    "collectCoverage": true
   }
 }

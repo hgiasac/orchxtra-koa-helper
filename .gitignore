@@ -4,3 +4,4 @@ typings
 lib
 dist
 .sublime-project
+coverage
