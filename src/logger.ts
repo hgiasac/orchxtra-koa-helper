@@ -1,5 +1,6 @@
 import * as bytes from "bytes";
 import Counter = require("passthrough-counter");
+import * as util from "util";
 import { IAuthenticatedHeader, IDBContext } from "./handler";
 import { deltaTime } from "./util";
 
@@ -93,7 +94,7 @@ function log(ctx: IDBContext, start: number, len, err?) {
   ctx.logger.log({
     status,
     length,
-    err,
+    err: err ? util.inspect(err) : undefined,
     type: "Response",
     method: ctx.method,
     url: ctx.originalUrl,

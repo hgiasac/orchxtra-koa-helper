@@ -99,7 +99,7 @@ export function deltaTime(start: number): string {
 }
 
 export interface IFileInput {
-  data: Buffer;
+  data: string;
   extension: string;
 }
 
