@@ -14,7 +14,16 @@ export function Logger(rawLogger) {
     const requestId = headers["x-orchxtra-apigateway-request-id"] || Date.now();
     const tag = `[${ctx.method}] ${ctx.originalUrl} - ${requestId}`;
 
-    const logTag = rawLogger.logTag || rawLogger.log;
+    const logTag = (_tag: string, payload: any) => {
+      const _log = rawLogger.logTag || rawLogger.log;
+
+      try {
+        return _log(_tag, payload);
+      } catch {
+        return _log(_tag, util.inspect(payload));
+      }
+    };
+
     const newLogger = {
       logTag,
       log: (payload: any) => {
