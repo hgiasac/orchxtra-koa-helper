@@ -122,6 +122,10 @@ function log(ctx: IDBContext, start: number, len, bodySizeLimit: number, err?) {
 
 function limitBody(body: any, size = 10000): any {
 
+  if (!body) {
+    return body;
+  }
+
   const result: string = typeof body === "object" ? JSON.stringify(body) : body.toString();
 
   return result.length < size ? body : result.substr(0, size);
