@@ -6,11 +6,48 @@ import { deltaTime } from "./util";
 
 export interface ILoggerOptions {
   bodySizeLimit: number;
+  printResponseBody: number;
 }
 
 export function Logger(rawLogger, options?: ILoggerOptions) {
 
-  const { bodySizeLimit = 50000 } = { ...options };
+  const { bodySizeLimit = 50000, printResponseBody = false } = {
+    ...options,
+  };
+
+  /**
+   * Log helper.
+   */
+  function printResponse(ctx: IDBContext, start: number, len, err?) {
+  // get the status code of the response
+    const status = err
+    ? (err.isBoom ? err.output.statusCode : err.status || 500)
+    : (ctx.status || 404);
+
+  // get the human readable response length
+    let length;
+    if ([204, 205, 304].indexOf(status) * -1) {
+      length = "";
+    } else if (!len) {
+      length = "-";
+    } else {
+      const byteLen = bytes(len);
+      length = byteLen ? byteLen.toString().toLowerCase() : "-";
+    }
+
+    ctx.logger.log({
+      status,
+      length,
+      err: err ? util.inspect(err) : undefined,
+      type: "Response",
+      method: ctx.method,
+      url: ctx.originalUrl,
+      origin: ctx.origin,
+      header: ctx.debug ? ctx.response.header : undefined,
+      body: printResponseBody ? limitBody(ctx.response.body, bodySizeLimit) : undefined,
+      time: deltaTime(start),
+    });
+  }
 
   return async function logger(ctx: IDBContext, next: () => any) {
     // request
@@ -51,7 +88,7 @@ export function Logger(rawLogger, options?: ILoggerOptions) {
       await next();
     } catch (err) {
       // log uncaught downstream errors
-      log(ctx, start, null, err);
+      printResponse(ctx, start, null, err);
       throw err;
     }
 
@@ -80,44 +117,10 @@ export function Logger(rawLogger, options?: ILoggerOptions) {
     function done() {
       res.removeListener("finish", onfinish);
       res.removeListener("close", onclose);
-      log(ctx, start, counter ? counter.length : length, bodySizeLimit, null);
+
+      printResponse(ctx, start, counter ? counter.length : length, null);
     }
   };
-}
-
-/**
- * Log helper.
- */
-
-function log(ctx: IDBContext, start: number, len, bodySizeLimit: number, err?) {
-  // get the status code of the response
-  const status = err
-    ? (err.isBoom ? err.output.statusCode : err.status || 500)
-    : (ctx.status || 404);
-
-  // get the human readable response length
-  let length;
-  if ([204, 205, 304].indexOf(status) * -1) {
-    length = "";
-  } else if (!len) {
-    length = "-";
-  } else {
-    const byteLen = bytes(len);
-    length = byteLen ? byteLen.toString().toLowerCase() : "-";
-  }
-
-  ctx.logger.log({
-    status,
-    length,
-    err: err ? util.inspect(err) : undefined,
-    type: "Response",
-    method: ctx.method,
-    url: ctx.originalUrl,
-    origin: ctx.origin,
-    header: ctx.debug ? ctx.response.header : undefined,
-    body: ctx.debug ? limitBody(ctx.response.body, bodySizeLimit) : undefined,
-    time: deltaTime(start),
-  });
 }
 
 function limitBody(body: any, size = 10000): any {
