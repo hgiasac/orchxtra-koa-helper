@@ -4,7 +4,13 @@ import * as util from "util";
 import { IAuthenticatedHeader, IDBContext } from "./handler";
 import { deltaTime } from "./util";
 
-export function Logger(rawLogger) {
+export interface ILoggerOptions {
+  bodySizeLimit: number;
+}
+
+export function Logger(rawLogger, options?: ILoggerOptions) {
+
+  const { bodySizeLimit = 50000 } = { ...options };
 
   return async function logger(ctx: IDBContext, next: () => any) {
     // request
@@ -38,7 +44,7 @@ export function Logger(rawLogger) {
       method: ctx.method,
       url: ctx.originalUrl,
       header: ctx.debug ? ctx.request.header : undefined,
-      body: ctx.debug ? ctx.request.body : undefined,
+      body: ctx.debug ? limitBody(ctx.request.body, bodySizeLimit) : undefined,
     });
 
     try {
@@ -74,7 +80,7 @@ export function Logger(rawLogger) {
     function done() {
       res.removeListener("finish", onfinish);
       res.removeListener("close", onclose);
-      log(ctx, start, counter ? counter.length : length, null);
+      log(ctx, start, counter ? counter.length : length, bodySizeLimit, null);
     }
   };
 }
@@ -83,7 +89,7 @@ export function Logger(rawLogger) {
  * Log helper.
  */
 
-function log(ctx: IDBContext, start: number, len, err?) {
+function log(ctx: IDBContext, start: number, len, bodySizeLimit: number, err?) {
   // get the status code of the response
   const status = err
     ? (err.isBoom ? err.output.statusCode : err.status || 500)
@@ -109,7 +115,14 @@ function log(ctx: IDBContext, start: number, len, err?) {
     url: ctx.originalUrl,
     origin: ctx.origin,
     header: ctx.debug ? ctx.response.header : undefined,
-    body: ctx.debug ? ctx.response.body : undefined,
+    body: ctx.debug ? limitBody(ctx.response.body, bodySizeLimit) : undefined,
     time: deltaTime(start),
   });
+}
+
+function limitBody(body: any, size = 10000): any {
+
+  const result: string = typeof body === "object" ? JSON.stringify(body) : body.toString();
+
+  return result.length < size ? body : result.substr(0, size);
 }

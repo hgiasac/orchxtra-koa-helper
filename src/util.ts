@@ -33,6 +33,15 @@ export function firstParam(param: string | string[]): string {
   return param && Array.isArray(param) ? param[0] : <string> param;
 }
 
+export function isEmail(email: string): boolean {
+
+  // tslint:disable max-line-length
+  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  // tslint:enable
+
+  return re.test(String(email).toLowerCase());
+}
+
 export const PAGE_SIZE = 20;
 
 export function parsePaginationQuery(params: IRequestQuery): IPagingParams {
