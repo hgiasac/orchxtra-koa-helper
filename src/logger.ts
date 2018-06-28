@@ -5,13 +5,20 @@ import { IAuthenticatedHeader, IDBContext } from "./handler";
 import { deltaTime } from "./util";
 
 export interface ILoggerOptions {
-  bodySizeLimit: number;
-  printResponseBody: number;
+  bodySizeLimit?: number;
+  printResponseBody?: boolean;
+  censorRequestProperties?: string[];
+  censorResponseProperties?: string[];
 }
 
 export function Logger(rawLogger, options?: ILoggerOptions) {
 
-  const { bodySizeLimit = 50000, printResponseBody = false } = {
+  const {
+    bodySizeLimit = 50000,
+    printResponseBody = false,
+    censorRequestProperties = [],
+    censorResponseProperties = []
+  } = {
     ...options,
   };
 
@@ -44,7 +51,11 @@ export function Logger(rawLogger, options?: ILoggerOptions) {
       url: ctx.originalUrl,
       origin: ctx.origin,
       header: ctx.debug ? ctx.response.header : undefined,
-      body: printResponseBody ? limitBody(ctx.response.body, bodySizeLimit) : undefined,
+      body: printResponseBody ? limitBody(
+
+        sensorProperties(ctx.request.body, censorResponseProperties),
+        bodySizeLimit
+      ) : undefined,
       time: deltaTime(start),
     });
   }
@@ -81,7 +92,10 @@ export function Logger(rawLogger, options?: ILoggerOptions) {
       method: ctx.method,
       url: ctx.originalUrl,
       header: ctx.debug ? ctx.request.header : undefined,
-      body: ctx.debug ? limitBody(ctx.request.body, bodySizeLimit) : undefined,
+      body: ctx.debug ? limitBody(
+        sensorProperties(ctx.request.body, censorRequestProperties),
+        bodySizeLimit
+      ) : undefined,
     });
 
     try {
@@ -132,4 +146,16 @@ function limitBody(body: any, size = 10000): any {
   const result: string = typeof body === "object" ? JSON.stringify(body) : body.toString();
 
   return result.length < size ? body : result.substr(0, size);
+}
+
+function sensorProperties(body: any, props: string[]): any {
+  if (typeof body !== "object") {
+    return body;
+  }
+
+  if (Array.isArray(body)) {
+    return body.map((o) => sensorProperties(o, props));
+  }
+
+  return props.reduce((name) => !body[name] ? body : { ...body, [name]: "xxx" });
 }
