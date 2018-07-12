@@ -56,3 +56,13 @@ export async function findServiceAccountModel(
 
   return model;
 }
+
+/**
+ * Parse query value to array
+ * @param input 
+ */
+export function parseArrayQuery(input: string | string[]): string[] {
+
+  return !input ? null : Array.isArray(input) ? input : [input];
+
+}
