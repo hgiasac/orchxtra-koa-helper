@@ -63,6 +63,11 @@ export async function findServiceAccountModel(
  */
 export function parseArrayQuery(input: string | string[]): string[] {
 
-  return !input ? [] : Array.isArray(input) ? input : [input];
+  return !input ? []
+    : Array.isArray(input)
+    ? input
+      : typeof input === "string"
+        ? input.split(",").map((s) => s.trim())
+        : [input];
 
 }
