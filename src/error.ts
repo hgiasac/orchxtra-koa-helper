@@ -1,4 +1,3 @@
-import { AxiosError } from "axios";
 import { IDBContext } from "./handler";
 
 export enum ErrorCode {
@@ -26,7 +25,16 @@ export function catchHandlerError(
   );
 }
 
-export function catchHTTPRequestException(ctx: IDBContext, e: AxiosError) {
+export interface IHttpError {
+  message: string;
+  response?: {
+    status: number;
+    data: any;
+  };
+}
+
+export function catchHTTPRequestException(
+  ctx: IDBContext, e: IHttpError) {
   if (ctx.debug || !e.response) {
     ctx.logger.log(e);
   }

@@ -1,5 +1,6 @@
 import * as Knex from "knex";
-import { Context, Request } from "koa";
+import { Request } from "koa";
+import { IRouterContext } from "koa-router";
 
 export interface ILogger {
   log: (payload: any) => void;
@@ -10,7 +11,7 @@ export interface IRequest<T = any> extends Request {
   body: T;
 }
 
-export interface IDBContext<T = any> extends Context {
+export interface IDBContext<T = any> extends IRouterContext {
   request: IRequest<T>;
   debug: boolean;
   db: Knex;
@@ -55,19 +56,4 @@ export async function findServiceAccountModel(
   }
 
   return model;
-}
-
-/**
- * Parse query value to array
- * @param input 
- */
-export function parseArrayQuery(input: string | string[]): string[] {
-
-  return !input ? []
-    : Array.isArray(input)
-    ? input
-      : typeof input === "string"
-        ? input.split(",").map((s) => s.trim())
-        : [input];
-
 }

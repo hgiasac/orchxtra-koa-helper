@@ -17,25 +17,25 @@
   "license": "ISC",
   "dependencies": {
     "@types/bytes": "^3.0.0",
-    "@types/joi": "^13.0.8",
-    "@types/knex": "^0.14.9",
-    "@types/koa": "^2.0.45",
-    "@types/nock": "^9.1.3",
-    "axios": "^0.18.0",
+    "@types/knex": "^0.14.16",
+    "@types/koa": "^2.0.46",
+    "@types/koa-router": "^7.0.31",
     "bytes": "^3.0.0",
-    "joi": "^13.3.0",
-    "knex": "^0.14.6",
-    "koa": "^2.5.0",
-    "nock": "^9.2.5",
     "passthrough-counter": "^1.0.0"
   },
+  "peerDependencies": {
+    "axios": "*",
+    "knex": "*",
+    "koa": "*",
+    "koa-router": "*"
+  },
   "devDependencies": {
-    "jest": "^23.1.0",
-    "ts-jest": "^22.4.6",
-    "tslint": "^5.9.1",
-    "tslint-consistent-codestyle": "^1.13.0",
-    "tslint-eslint-rules": "^5.1.0",
-    "typescript": "^2.8.1"
+    "jest": "^23.4.1",
+    "ts-jest": "^23.0.1",
+    "tslint": "^5.11.0",
+    "tslint-consistent-codestyle": "^1.13.2",
+    "tslint-eslint-rules": "^5.3.1",
+    "typescript": "^2.9.2"
   },
   "jest": {
     "transform": {

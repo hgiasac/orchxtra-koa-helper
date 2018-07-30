@@ -20,10 +20,10 @@
     "tabSize": 2
   },
   "include": [
-    "src/**/*"
+    "src"
   ],
   "exclude": [
     "node_modules",
-    "test"
+    "__tests__"
   ]
 }
