@@ -73,8 +73,18 @@ export function Logger(rawLogger, options?: ILoggerOptions) {
 
       try {
         return _log(_tag, payload);
-      } catch {
-        return _log(_tag, util.inspect(payload));
+      } catch (e) {
+        switch (e.code) {
+        case "ResourceNotFoundException":
+
+          // something wrong when connect to log server
+          // ignore it to avoid killing process
+          console.error(e);
+          break;
+        default:
+          return _log(_tag, util.inspect(payload));
+        }
+
       }
     };
 
