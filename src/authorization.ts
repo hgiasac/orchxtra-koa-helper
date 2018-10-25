@@ -1,6 +1,14 @@
 import { Context } from "koa";
 import { uniq } from "./util";
 
+export function getPermissionName(
+  parts: string[]): string {
+
+  return parts.length < 3
+    ? [...parts, "*"].join(".")
+    : parts.join(".");
+}
+
 export interface IAuthorizationOptions {
   accept: string[];
 }
