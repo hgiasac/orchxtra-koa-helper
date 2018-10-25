@@ -51,6 +51,6 @@ export function catchHTTPRequestException(
     ctx.status = e.response.status;
     ctx.body = e.response.data;
   } else {
-    ctx.throw(500, e.message);
+    ctx.throw(new HandlerError(<any> e));
   }
 }
