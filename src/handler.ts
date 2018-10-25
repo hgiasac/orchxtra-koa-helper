@@ -25,7 +25,8 @@ export interface IAuthenticatedHeader {
   "x-orchxtra-user-id": string;
   "x-orchxtra-service-account-id": string;
   "x-orchxtra-display-name": string;
-  "x-orchxtra-email": string;
+  "x-orchxtra-permissions": string;
+  "x-orchxtra-institutes": string;
 }
 
 export async function findServiceAccountModel(
