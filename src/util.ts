@@ -147,3 +147,11 @@ export function parseArrayQuery(input: string | string[]): string[] {
         : [input];
 
 }
+
+/** 
+ * Unique array items
+ */
+export function uniq<T = any>(input: T[]): T[] {
+  return input.reduce((acc: T[], item) =>
+    acc.includes(item) ? acc : [...acc, item] , []);
+}
