@@ -13,6 +13,7 @@ export interface IError {
 
 export class HandlerError extends Error {
 
+  public name = "HandlerError";
   public status: number;
   public code: string;
 
