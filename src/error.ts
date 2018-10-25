@@ -11,18 +11,26 @@ export interface IError {
   message: string;
 }
 
+export class HandlerError extends Error {
+
+  public status: number;
+  public code: string;
+
+  constructor(err: IError) {
+    super(err.message);
+    this.status = err.status || 500;
+    this.code = err.code || ErrorCode.InternalError;
+  }
+}
+
 export function catchHandlerError(
-  ctx: IDBContext, err: Error | IError): never {
-  if (ctx.debug || !(<IError> err).status || (<IError> err).status === 500) {
+  ctx: IDBContext, err: HandlerError): void {
+  if (ctx.debug || !err.status || err.status === 500) {
     ctx.logger.log(err);
   }
 
-  return ctx.throw(
-    (<IError> err).status || 500, {
-      code: (<IError> err).code || ErrorCode.InternalError,
-      message: err.message,
-    }
-  );
+  ctx.status = err.status || 500;
+  ctx.body = err;
 }
 
 export interface IHttpError {
