@@ -155,3 +155,22 @@ export function uniq<T = any>(input: T[]): T[] {
   return input.reduce((acc: T[], item) =>
     acc.includes(item) ? acc : [...acc, item] , []);
 }
+
+export interface IPaginationResult<T = any> {
+  data: T[];
+  pagination: {
+    page: number;
+    pageSize?: number;
+    total: number;
+  };
+}
+
+export function emptyPaginationResult(): IPaginationResult {
+  return {
+    data: [],
+    pagination: {
+      page: 1,
+      total: 0,
+    }
+  };
+}
