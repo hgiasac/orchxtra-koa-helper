@@ -27,7 +27,7 @@ export class HandlerError extends Error {
 export function catchHandlerError(
   ctx: IDBContext, err: HandlerError): void {
   if (ctx.debug || !err.status || err.status === 500) {
-    ctx.logger.log(err);
+    ctx.logger.error(err);
   }
 
   ctx.status = err.status || 500;
@@ -45,7 +45,7 @@ export interface IHttpError {
 export function catchHTTPRequestException(
   ctx: IDBContext, e: IHttpError) {
   if (ctx.debug || !e.response) {
-    ctx.logger.log(e);
+    ctx.logger.error(e);
   }
 
   if (e.response) {

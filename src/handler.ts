@@ -3,7 +3,9 @@ import { Request } from "koa";
 import { IRouterContext } from "koa-router";
 
 export interface ILogger {
-  log: (payload: any) => void;
+  info: (payload: any) => void;
+  warn: (payload: any) => void;
+  error: (payload: any) => void;
 }
 
 export interface IRequest<T = any> extends Request {

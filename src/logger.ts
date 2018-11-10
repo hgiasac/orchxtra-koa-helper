@@ -1,7 +1,7 @@
 import * as bytes from "bytes";
 import Counter = require("passthrough-counter");
 import * as util from "util";
-import { IAuthenticatedHeader, IDBContext } from "./handler";
+import { IAuthenticatedHeader, IDBContext, ILogger } from "./handler";
 import { deltaTime } from "./util";
 
 export interface ILoggerOptions {
@@ -10,7 +10,7 @@ export interface ILoggerOptions {
   censorResponseProperties?: string[];
 }
 
-export function Logger(rawLogger, options?: ILoggerOptions) {
+export function Logger(rawLogger: ILogger, options?: ILoggerOptions) {
 
   const {
     printResponseBody = false,
@@ -40,7 +40,7 @@ export function Logger(rawLogger, options?: ILoggerOptions) {
       length = byteLen ? byteLen.toString().toLowerCase() : "-";
     }
 
-    ctx.logger.log({
+    const payload = {
       status,
       length,
       err: err ? util.inspect(err) : undefined,
@@ -53,7 +53,9 @@ export function Logger(rawLogger, options?: ILoggerOptions) {
         sensorProperties(ctx.request.body, censorResponseProperties),
       ) : undefined,
       time: deltaTime(start),
-    });
+    };
+
+    err ? ctx.logger.error(payload) : ctx.logger.info(payload);
   }
 
   return async function logger(ctx: IDBContext, next: () => any) {
@@ -64,21 +66,9 @@ export function Logger(rawLogger, options?: ILoggerOptions) {
     const requestId = headers["x-orchxtra-apigateway-request-id"] || Date.now();
     const tag = `[${ctx.method}] ${ctx.originalUrl} - ${requestId}`;
 
-    const newLogger = {
-      log: (payload: any) => {
-        const _log = rawLogger.log;
+    ctx.logger = rawLogger;
 
-        try {
-          return _log(payload);
-        } catch (e) {
-          return _log(util.inspect(payload));
-        }
-      }
-    };
-
-    ctx.logger = newLogger;
-
-    ctx.logger.log({
+    ctx.logger.info({
       tag,
       type: "Request",
       method: ctx.method,
