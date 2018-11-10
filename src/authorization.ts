@@ -1,5 +1,5 @@
 import { Context } from "koa";
-import { uniq } from "./util";
+import { parseArrayQuery, uniq } from "./util";
 
 export function getPermissionName(
   parts: string[]): string {
@@ -13,6 +13,30 @@ export interface IAuthorizationOptions {
   accept: string[];
 }
 
+export function userCan(permissions: string | string[], accept: string[]): boolean {
+
+  if (!permissions || !permissions.length) {
+    return false;
+  }
+
+  const perms = parseArrayQuery(permissions);
+
+  const acceptParts = [].concat(...accept
+  .map((s) => s.split("."))
+  .map((ss) => [
+    ...Array(ss.length).keys()
+  ].splice(1)
+  .map((n) => [...ss.slice(0, n), "*"].join(".")))
+);
+
+  const acceptModules = [
+    ...uniq(acceptParts),
+    ...accept,
+  ];
+
+  return acceptModules.some((k) => perms.includes(k));
+}
+
 export function AuthorizationMiddleware(
   options: IAuthorizationOptions
 ) {
@@ -20,25 +44,7 @@ export function AuthorizationMiddleware(
 
     const permissionHeader: string = ctx.headers["x-orchxtra-permissions"];
 
-    const permissions = !permissionHeader ? [] :
-      permissionHeader
-        .split(",")
-        .map((s) => s.trim());
-
-    const acceptParts = [].concat(...options.accept
-      .map((s) => s.split("."))
-      .map((ss) => [
-        ...Array(ss.length).keys()
-      ].splice(1)
-      .map((n) => [...ss.slice(0, n), "*"].join(".")))
-    );
-
-    const acceptModules = [
-      ...uniq(acceptParts),
-      ...options.accept,
-    ];
-
-    if (acceptModules.some((k) => permissions.includes(k))) {
+    if (userCan(permissionHeader, options.accept)) {
       return next();
     }
 
