@@ -5,7 +5,6 @@ import { IAuthenticatedHeader, IDBContext } from "./handler";
 import { deltaTime } from "./util";
 
 export interface ILoggerOptions {
-  bodySizeLimit?: number;
   printResponseBody?: boolean;
   censorRequestProperties?: string[];
   censorResponseProperties?: string[];
@@ -14,7 +13,6 @@ export interface ILoggerOptions {
 export function Logger(rawLogger, options?: ILoggerOptions) {
 
   const {
-    bodySizeLimit = 50000,
     printResponseBody = false,
     censorRequestProperties = [],
     censorResponseProperties = []
@@ -52,9 +50,7 @@ export function Logger(rawLogger, options?: ILoggerOptions) {
       origin: ctx.origin,
       header: ctx.debug ? ctx.response.header : undefined,
       body: printResponseBody ? limitBody(
-
         sensorProperties(ctx.request.body, censorResponseProperties),
-        bodySizeLimit
       ) : undefined,
       time: deltaTime(start),
     });
@@ -68,43 +64,28 @@ export function Logger(rawLogger, options?: ILoggerOptions) {
     const requestId = headers["x-orchxtra-apigateway-request-id"] || Date.now();
     const tag = `[${ctx.method}] ${ctx.originalUrl} - ${requestId}`;
 
-    const logTag = (_tag: string, payload: any) => {
-      const _log = rawLogger.logTag || rawLogger.log;
-
-      try {
-        return _log(_tag, payload);
-      } catch (e) {
-        switch (e.code) {
-        case "ResourceNotFoundException":
-
-          // something wrong when connect to log server
-          // ignore it to avoid killing process
-          console.error(e);
-          break;
-        default:
-          return _log(_tag, util.inspect(payload));
-        }
-
-      }
-    };
-
     const newLogger = {
-      logTag,
       log: (payload: any) => {
-        return logTag(tag, payload);
+        const _log = rawLogger.log;
+
+        try {
+          return _log(payload);
+        } catch (e) {
+          return _log(util.inspect(payload));
+        }
       }
     };
 
     ctx.logger = newLogger;
 
     ctx.logger.log({
+      tag,
       type: "Request",
       method: ctx.method,
       url: ctx.originalUrl,
       header: ctx.debug ? ctx.request.header : undefined,
       body: ctx.debug ? limitBody(
         sensorProperties(ctx.request.body, censorRequestProperties),
-        bodySizeLimit
       ) : undefined,
     });
 
