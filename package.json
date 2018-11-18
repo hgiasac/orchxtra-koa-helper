@@ -17,9 +17,9 @@
   "license": "ISC",
   "dependencies": {
     "@types/bytes": "^3.0.0",
-    "@types/knex": "^0.15.0",
-    "@types/koa": "^2.0.46",
-    "@types/koa-router": "^7.0.33",
+    "@types/knex": "*",
+    "@types/koa": "*",
+    "@types/koa-router": "*",
     "bytes": "^3.0.0",
     "passthrough-counter": "^1.0.0"
   },
