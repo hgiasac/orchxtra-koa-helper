@@ -1,5 +1,5 @@
 import { Context } from "koa";
-import { parseArrayQuery, uniq } from "./util";
+import { parseArrayQuery, uniq } from "../util";
 
 export function getPermissionName(
   parts: string[]): string {
@@ -36,7 +36,6 @@ export function userCan(permissions: string | string[], accept: string[]): boole
 
   return acceptModules.some((k) => perms.includes(k));
 }
-
 export function AuthorizationMiddleware(
   options: IAuthorizationOptions
 ) {
