@@ -49,7 +49,7 @@ export function Logger(rawLogger: ILogger, options?: ILoggerOptions) {
       url: ctx.originalUrl,
       origin: ctx.origin,
       header: ctx.debug ? ctx.response.header : undefined,
-      body: printResponseBody ? limitBody(
+      body: (printResponseBody || ctx.debug) ? limitBody(
         sensorProperties(ctx.request.body, censorResponseProperties),
       ) : undefined,
       time: deltaTime(start),
@@ -68,21 +68,26 @@ export function Logger(rawLogger: ILogger, options?: ILoggerOptions) {
 
     ctx.logger = rawLogger;
 
-    ctx.logger.info({
-      tag,
-      type: "Request",
-      method: ctx.method,
-      url: ctx.originalUrl,
-      header: ctx.debug ? ctx.request.header : undefined,
-      body: ctx.debug ? limitBody(
-        sensorProperties(ctx.request.body, censorRequestProperties),
-      ) : undefined,
-    });
+    function logRequest() {
+
+      ctx.logger.info({
+        tag,
+        type: "Request",
+        method: ctx.method,
+        url: ctx.originalUrl,
+        header: ctx.debug ? ctx.request.header : undefined,
+        body: ctx.debug ? limitBody(
+          sensorProperties(ctx.request.body, censorRequestProperties),
+        ) : undefined,
+      });
+    }
 
     try {
       await next();
+      logRequest();
     } catch (err) {
       // log uncaught downstream errors
+      logRequest();
       printResponse(ctx, start, null, err);
       throw err;
     }
