@@ -143,5 +143,8 @@ function sensorProperties(body: any, props: string[]): any {
     return body.map((o) => sensorProperties(o, props));
   }
 
-  return props.reduce((name) => !body[name] ? body : { ...body, [name]: "xxx" });
+  return props
+    .reduce((acc, name) =>
+      !acc[name]
+      ? acc : { ...acc, [name]: "xxx" }, body);
 }
